@@ -6,7 +6,7 @@ import { ConfigType } from "../types/auth";
 export const getCities = async () => {
   try {
     const res = await axios.get(`${ENV.CONFIG_SHEET_EP}?key=${ENV.API_KEY}`)
-    return res?.data;
+    return res?.data?.cities;
   } catch (error) {
     console.error(error)
     throw error;
