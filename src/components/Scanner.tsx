@@ -17,6 +17,11 @@ const Scanner: React.FC = () => {
         onScan={handleScan}
         allowMultiple
         scanDelay={3000}
+        styles={{
+          video: {
+            borderRadius: 15
+          },
+        }}
       />
 
     </div>
