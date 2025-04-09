@@ -2,13 +2,14 @@ import React, { useEffect } from 'react'
 import Scanner from '../Scanner'
 import { Loader, ScanQrCode } from 'lucide-react'
 import { useApp } from '../../hooks/useApp'
-import { DATA_RESPONSE_KEYS, TOAST_STYLES } from '../../utils/constants'
+import { CONFIG_RESPONSE_KEYS, DATA_RESPONSE_KEYS, TOAST_STYLES } from '../../utils/constants'
 import { useAuth } from '../../hooks/useAuth'
 import { MemberData } from '../../types'
 import { toast } from 'sonner'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 
 const Scan = () => {
-  const { config } = useAuth()
+  const { config, allCitiesConfig, updateMasterSheetEP } = useAuth()
   const { masterData, qrScanData, setQRScanData, registerAttendance, attendanceData, isAttendanceDataLoading } = useApp()
 
   useEffect(() => {
@@ -60,6 +61,19 @@ const Scan = () => {
     <div className="flex flex-col h-full">
       <div>
         <Scanner />
+      </div>
+
+      <div className='mt-2'>
+        <Select defaultValue={config?.city} onValueChange={updateMasterSheetEP}>
+          <SelectTrigger className="w-fit bg-gray-100 p-6 text-left text-base focus:ring-0 focus:ring-offset-0 border border-transparent focus:border-transparent">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {allCitiesConfig?.map((e, i) => (
+              <SelectItem key={i} value={e[CONFIG_RESPONSE_KEYS.CITY]} className="text-base">{e[CONFIG_RESPONSE_KEYS.CITY]} Database</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex-1 grid place-items-center">

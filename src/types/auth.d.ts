@@ -2,7 +2,9 @@ export interface AuthContextType {
     isAuthenticated: boolean,
     login: (city: string, passkey: string) => Promise<boolean>,
     config: ConfigType,
-    isLoginLoading: boolean
+    isLoginLoading: boolean,
+    allCitiesConfig: ConfigType[],
+    updateMasterSheetEP: (city: string) => void;
 }
 
 export type AuthProviderProps = {
