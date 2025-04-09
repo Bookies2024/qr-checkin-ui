@@ -61,6 +61,7 @@ const Scan = () => {
       <div>
         <Scanner />
       </div>
+
       <div className="flex-1 grid place-items-center">
         <div className="flex gap-2 text-[#58551E]">
           {!isAttendanceDataLoading ? (

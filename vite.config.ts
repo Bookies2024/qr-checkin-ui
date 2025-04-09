@@ -4,7 +4,6 @@ import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 // import fs from "fs"
 
-
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
