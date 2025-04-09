@@ -6,7 +6,7 @@ import { ConfigType } from "../types/auth";
 export const getCities = async () => {
   try {
     const res = await axios.get(`${ENV.CONFIG_SHEET_EP}?key=${ENV.API_KEY}`)
-    return res?.data?.cities;
+    return res?.data;
   } catch (error) {
     console.error(error)
     throw error;
@@ -15,7 +15,7 @@ export const getCities = async () => {
 
 export const getAttendanceData = async (config: ConfigType) => {
   try {
-    const res = await axios.get(config.attendanceSheetEndPoint);
+    const res = await axios.get(`${config.attendanceSheetEndPoint}?key=${ENV.API_KEY}`);
     return res?.data;
   } catch (error) {
     console.error("Error fetching master data:", error);
@@ -25,7 +25,7 @@ export const getAttendanceData = async (config: ConfigType) => {
 
 export const getMasterData = async (config: ConfigType) => {
   try {
-    const res = await axios.get(config.masterSheetEndPoint);
+    const res = await axios.get(`${config.masterSheetEndPoint}?key=${ENV.API_KEY}`);
     return res?.data;
   } catch (error) {
     console.error("Error fetching master data:", error);

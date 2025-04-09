@@ -41,13 +41,19 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
 
   const { data: masterData, isLoading: isMasterDataLoading } = useQuery({
     queryKey: ["masterData", config],
-    queryFn: () => getMasterData(config),
+    queryFn: async () => {
+      const res = await getMasterData(config)
+      return res
+    },
     enabled: !!config,
   });
 
   const { data: attendanceData, isLoading: isAttendanceDataLoading } = useQuery({
     queryKey: ["attendanceData", config],
-    queryFn: () => getAttendanceData(config),
+    queryFn: async () => {
+      const res = await getAttendanceData(config)
+      return res
+    },
     enabled: !!config,
   });
 
