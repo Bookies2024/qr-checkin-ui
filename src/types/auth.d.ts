@@ -14,5 +14,6 @@ export type AuthProviderProps = {
 export type ConfigType = {
     city: string,
     masterSheetEndPoint: string,
-    attendanceSheetEndPoint: string
+    attendanceSheetEndPoint: string,
+    database?: string;
 }

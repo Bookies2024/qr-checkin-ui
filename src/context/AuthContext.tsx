@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           city: cityConfig[CONFIG_RESPONSE_KEYS.CITY],
           masterSheetEndPoint: cityConfig[CONFIG_RESPONSE_KEYS.MASTER_EP],
           attendanceSheetEndPoint: cityConfig[CONFIG_RESPONSE_KEYS.ATTENDANCE_EP],
+          database: cityConfig[CONFIG_RESPONSE_KEYS.CITY],
         };
 
         setIsAuthenticated(true);
@@ -56,6 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setConfig({
         ...config,
         masterSheetEndPoint: selectedCityConfig[CONFIG_RESPONSE_KEYS.MASTER_EP],
+        database: selectedCityConfig[CONFIG_RESPONSE_KEYS.CITY]
       });
     }
   };

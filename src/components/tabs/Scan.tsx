@@ -64,7 +64,7 @@ const Scan = () => {
       </div>
 
       <div className='mt-2'>
-        <Select defaultValue={config?.city} onValueChange={updateMasterSheetEP}>
+        <Select defaultValue={config?.database} onValueChange={updateMasterSheetEP}>
           <SelectTrigger className="w-fit bg-gray-100 p-6 text-left text-base focus:ring-0 focus:ring-offset-0 border border-transparent focus:border-transparent">
             <SelectValue />
           </SelectTrigger>
