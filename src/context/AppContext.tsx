@@ -9,7 +9,8 @@ import {
   getCities,
   getMasterData,
   linkBookiesID as linkBookiesIDService,
-  registerAttendance as registerAttendanceService
+  registerAttendance as registerAttendanceService,
+  getMemberAttendance as getMemberAttendanceService
 } from "../services/api";
 import {
   useMutation,
@@ -18,6 +19,7 @@ import {
 } from "@tanstack/react-query";
 import { useAuth } from "../hooks/useAuth";
 import { ConfigType } from "../types/auth";
+import { CONFIG_RESPONSE_KEYS, DATA_RESPONSE_KEYS } from "../utils/constants";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AppContext = createContext<AppContextType | undefined>(undefined); // removed `any`
@@ -28,6 +30,7 @@ type AppProviderProps = {
 
 export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const [qrScanData, setQRScanData] = useState<string | null>(null);
+  const [searchKey, setSearchKey] = useState<string | null>(null)
   const { config } = useAuth();
   const queryClient = useQueryClient();
 
@@ -99,6 +102,46 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     [linkBookieIDMutation]
   );
 
+  const getMemberAttendanceMutation = useMutation({
+    mutationFn: ({ allCitiesConfig, bookiesId }: { allCitiesConfig: ConfigType[], bookiesId: string }) =>
+      getMemberAttendance(allCitiesConfig, bookiesId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["memberAttendance", config] });
+    },
+  });
+
+  const getMemberAttendance = useCallback(
+    async (allCitiesConfig: ConfigType[], bookiesId: string): Promise<AttendanceSchemaType[] | undefined> => {
+      try {
+        const allResponses = await Promise.allSettled(
+          allCitiesConfig.map(config =>
+            getMemberAttendanceService(config[CONFIG_RESPONSE_KEYS.ATTENDANCE_EP], bookiesId)
+              .then(data => ({ data, city: config[CONFIG_RESPONSE_KEYS.CITY] }))
+          )
+        );
+
+        const allAttendance: AttendanceSchemaType[] = [];
+
+        for (const res of allResponses) {
+          if (res.status === "fulfilled" && Array.isArray(res.value.data)) {
+            const enrichedData = res.value.data.map(record => ({
+              ...record,
+              city: res.value.city,
+            }));
+            allAttendance.push(...enrichedData);
+          }
+        }
+
+        return allAttendance.sort(
+          (a, b) => new Date(b[DATA_RESPONSE_KEYS.TIMESTAMP]).getTime() -
+            new Date(a[DATA_RESPONSE_KEYS.TIMESTAMP]).getTime()
+        );
+      } catch (error) {
+        console.error("Failed to fetch combined attendance:", error);
+      }
+    },
+    [getMemberAttendanceMutation]
+  );
   const contextValue: AppContextType = {
     cities,
     isCitiesLoading,
@@ -106,10 +149,13 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     isMasterDataLoading,
     qrScanData,
     setQRScanData,
+    searchKey,
+    setSearchKey,
     attendanceData,
     isAttendanceDataLoading,
     registerAttendance,
-    linkBookiesID
+    linkBookiesID,
+    getMemberAttendance
   };
 
   return (

@@ -18,6 +18,9 @@ const Scanner: React.FC = () => {
         allowMultiple
         scanDelay={6000}
         styles={{
+          container: {
+            aspectRatio: '1/1'
+          },
           video: {
             borderRadius: 15
           },
