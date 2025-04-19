@@ -11,10 +11,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
+  server: process.env.NODE_ENV == 'development' ? {
     https: {
       key: fs.readFileSync('./cert/key.pem'),
       cert: fs.readFileSync('./cert/cert.pem'),
     },
-  },
+  } : {}
 })
