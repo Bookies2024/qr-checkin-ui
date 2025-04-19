@@ -30,6 +30,7 @@ type AppProviderProps = {
 
 export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const [qrScanData, setQRScanData] = useState<string | null>(null);
+  const [isQRScanPaused, setIsQRScanPaused] = useState<boolean>(false)
   const [searchKey, setSearchKey] = useState<string | null>(null)
   const { config } = useAuth();
   const queryClient = useQueryClient();
@@ -142,6 +143,17 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     },
     [getMemberAttendanceMutation]
   );
+
+  const setQRScanPauseState = (value: boolean) => {
+    if (value) {
+      setIsQRScanPaused(true)
+    } else {
+      setTimeout(() => {
+        setIsQRScanPaused(false)
+      }, 2000);
+    }
+  }
+
   const contextValue: AppContextType = {
     cities,
     isCitiesLoading,
@@ -153,6 +165,8 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     setSearchKey,
     attendanceData,
     isAttendanceDataLoading,
+    isQRScanPaused,
+    setQRScanPauseState,
     registerAttendance,
     linkBookiesID,
     getMemberAttendance

@@ -37,6 +37,8 @@ export interface AppContextType {
     isAttendanceDataLoading: boolean,
     qrScanData: string | null;
     searchKey: string | null;
+    isQRScanPaused: boolean;
+    setQRScanPauseState: (value: boolean) => void
     setQRScanData: (data: string | null) => void;
     setSearchKey: (data: string | null) => void;
     registerAttendance: (config: ConfigType, data: AttendanceSchemaType) => Promise<any>,

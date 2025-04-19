@@ -10,11 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 const Scan = () => {
   const { config, allCitiesConfig, updateMasterSheetEP } = useAuth()
-  const { masterData, qrScanData, setQRScanData, registerAttendance, attendanceData, isAttendanceDataLoading } = useApp()
+  const { masterData, qrScanData, setQRScanData, setQRScanPauseState, registerAttendance, attendanceData, isAttendanceDataLoading } = useApp()
 
   useEffect(() => {
     (async () => {
       if (!qrScanData || !Array.isArray(masterData) || !config || !attendanceData) return;
+
+      setQRScanPauseState(true)
 
       const member = masterData.find(
         (m: MemberData) =>
@@ -24,6 +26,7 @@ const Scan = () => {
 
       if (!member) {
         toast.error(`No data found for ${qrScanData}`, { style: TOAST_STYLES.ERROR });
+        setQRScanPauseState(false)
         setQRScanData(null);
         return;
       }
@@ -34,6 +37,7 @@ const Scan = () => {
 
       if (alreadyRegistered) {
         toast.warning(`Attendance already registered for ${qrScanData}`, { style: TOAST_STYLES.WARNING });
+        setQRScanPauseState(false)
         setQRScanData(null);
         return;
       }
@@ -51,6 +55,7 @@ const Scan = () => {
         toast.error(res?.error || "Something went wrong", { style: TOAST_STYLES.ERROR });
       }
 
+      setQRScanPauseState(false)
       setQRScanData(null);
     })()
 

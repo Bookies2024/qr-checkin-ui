@@ -13,12 +13,14 @@ const Link = () => {
   const [activeStep, setActiveStep] = useState(0)
   const [member, setMember] = useState<MemberData | null>(null)
   const [email, setEmail] = useState('')
-  const { qrScanData, linkBookiesID, masterData, setQRScanData } = useApp()
+  const { qrScanData, linkBookiesID, masterData, setQRScanData, setQRScanPauseState } = useApp()
   const { config } = useAuth()
 
   useEffect(() => {
     (async () => {
       if (!qrScanData || !Array.isArray(masterData) || !config) return;
+
+      setQRScanPauseState(true)
 
       if (activeStep === 0) {
         const foundMember = masterData.find(
@@ -32,6 +34,7 @@ const Link = () => {
           setActiveStep(1);
         }
 
+        setQRScanPauseState(false)
         setQRScanData(null);
       } else if (activeStep === 1 && member) {
         setActiveStep(2);
@@ -52,6 +55,7 @@ const Link = () => {
           toast.error(res?.error || "Something went wrong", { style: TOAST_STYLES.ERROR });
         }
 
+        setQRScanPauseState(false)
         setQRScanData(null);
       }
     })();
@@ -72,8 +76,6 @@ const Link = () => {
       setActiveStep(1)
       setEmail('')
     }
-
-    setQRScanData(null)
   }
 
   return (
