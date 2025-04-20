@@ -57,7 +57,7 @@ const Auth = () => {
             <p className="mt-4 text-[#58551E]">Loading...</p>
           </div>
         ) : (
-          <div className="-translate-y-16 space-y-10">
+          <div className="-mt-16 space-y-10">
             <div className="grid place-items-center">
               <img src={BookiesLogo} alt="Bookies Logo" className="h-24" />
               <h1 className="text-2xl font-bold text-[#58551E] mt-4 uppercase">

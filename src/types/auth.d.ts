@@ -1,6 +1,8 @@
 export interface AuthContextType {
     isAuthenticated: boolean,
+    isAuthInitialized: boolean,
     login: (city: string, passkey: string) => Promise<boolean>,
+    logout: () => void;
     config: ConfigType,
     isLoginLoading: boolean,
     allCitiesConfig: ConfigType[],

@@ -1,14 +1,18 @@
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState, useCallback, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { AuthContextType, AuthProviderProps, ConfigType } from "../types/auth";
 import { CONFIG_RESPONSE_KEYS } from "../utils/constants";
 import { login as getConfig } from "../services/api";
+
+const AUTH_STORAGE_KEY = "auth";
+const EXPIRY_TIME_MS = 2 * 60 * 60 * 1000;
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthInitialized, setIsAuthInitialized] = useState(false);
   const [config, setConfig] = useState<ConfigType | null>(null);
   const [allCitiesConfig, setAllCitiesConfig] = useState<ConfigType[] | null>(null)
 
@@ -35,6 +39,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           database: cityConfig[CONFIG_RESPONSE_KEYS.CITY],
         };
 
+        const authData = {
+          config: configData,
+          allCitiesConfig: data,
+          timestamp: Date.now(),
+        };
+
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
+
         setIsAuthenticated(true);
         setConfig(configData);
         setAllCitiesConfig(data)
@@ -47,6 +59,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
     [loginMutation]
   );
+
+  const logout = () => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    setIsAuthenticated(false);
+    setConfig(null);
+    setAllCitiesConfig(null);
+  };
+
 
   const updateMasterSheetEP = (city: string) => {
     const selectedCityConfig = allCitiesConfig?.find(
@@ -62,9 +82,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    const auth = localStorage.getItem(AUTH_STORAGE_KEY)
+    if (auth) {
+      const data = JSON.parse(auth)
+      const isExpired = Date.now() - data.timestamp > EXPIRY_TIME_MS
+
+      if (!isExpired) {
+        setIsAuthenticated(true)
+        setConfig(data.config)
+        setAllCitiesConfig(data.allCitiesConfig)
+      } else {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+      }
+    }
+
+    setIsAuthInitialized(true);
+  }, []);
+
   const contextValue: AuthContextType = {
     isAuthenticated,
+    isAuthInitialized,
     login,
+    logout,
     isLoginLoading: loginMutation.isPending,
     config,
     allCitiesConfig,

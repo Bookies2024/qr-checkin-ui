@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { TABS } from '../utils/constants'
 
 const Home: React.FC = () => {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isAuthInitialized } = useAuth()
   const navigate = useNavigate()
 
   const tabs = [
@@ -20,11 +20,13 @@ const Home: React.FC = () => {
   ]
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthInitialized && !isAuthenticated) {
       navigate('/login')
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, isAuthInitialized, navigate])
 
+  if (!isAuthInitialized) return <div>Loading...</div>;
+  
   return (
     <PageLayout>
       <Tabs defaultValue={TABS.SCAN} className="flex flex-col h-full w-full">
