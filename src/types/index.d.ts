@@ -36,9 +36,14 @@ export interface AppContextType {
     attendanceData: AttendanceRecord[],
     isAttendanceDataLoading: boolean,
     qrScanData: string | null;
+    searchKey: string | null;
+    isQRScanPaused: boolean;
+    setQRScanPauseState: (value: boolean) => void
     setQRScanData: (data: string | null) => void;
+    setSearchKey: (data: string | null) => void;
     registerAttendance: (config: ConfigType, data: AttendanceSchemaType) => Promise<any>,
     linkBookiesID: (config: ConfigType, data: LinkSchemaType) => Promise<any>,
+    getMemberAttendance: (allCitiesConfig: ConfigType[], bookiesId: string) => Promise<any>,
 }
 
 export type AttendanceSchemaType = {

@@ -3,7 +3,7 @@ import { IDetectedBarcode, Scanner as ScannerComponent } from '@yudiel/react-qr-
 import { useApp } from '../hooks/useApp';
 
 const Scanner: React.FC = () => {
-  const { setQRScanData } = useApp()
+  const { setQRScanData, isQRScanPaused } = useApp()
 
   const handleScan = (result: IDetectedBarcode[] | null) => {
     if (result?.[0]) {
@@ -16,8 +16,12 @@ const Scanner: React.FC = () => {
       <ScannerComponent
         onScan={handleScan}
         allowMultiple
-        scanDelay={3000}
+        paused={isQRScanPaused}
+        scanDelay={1000}
         styles={{
+          container: {
+            aspectRatio: '1/1'
+          },
           video: {
             borderRadius: 15
           },

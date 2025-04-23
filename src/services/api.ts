@@ -95,3 +95,13 @@ export const linkBookiesID = async (config: ConfigType, data: LinkSchemaType) =>
     throw error;
   }
 }
+
+export const getMemberAttendance = async (endpoint: string, bookiesId: string) => {
+  try {
+    const res = await axios.get(`${endpoint}?key=${ENV.API_KEY}&bookiesId=${bookiesId}`);
+    return res?.data;
+  } catch (error) {
+    console.error("Error fetching member attendance data:", error);
+    throw error;
+  }
+}
