@@ -10,6 +10,7 @@ import RootLayout from './layout/RootLayout'
 import Auth from './pages/Auth'
 import Home from './pages/Home'
 import PageNotFound from './pages/404'
+import Member from './pages/Member'
 
 const client = new QueryClient()
 
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<RootLayout />}>
       <Route index element={<Home />} />
+      <Route path=':memberId' element={<Member />} />
       <Route path='login' element={<Auth />} />
       <Route path='*' element={<PageNotFound />} />
     </Route>

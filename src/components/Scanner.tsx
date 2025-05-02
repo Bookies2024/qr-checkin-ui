@@ -7,7 +7,7 @@ const Scanner: React.FC = () => {
 
   const handleScan = (result: IDetectedBarcode[] | null) => {
     if (result?.[0]) {
-      setQRScanData(result[0].rawValue);
+      setQRScanData(result[0].rawValue.startsWith(window.location.host) ? result[0].rawValue.split('/')[1] : result[0].rawValue);
     }
   };
 
