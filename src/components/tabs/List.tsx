@@ -16,7 +16,6 @@ import {
   TableRow,
 } from "../../components/ui/table"
 
-
 const List = () => {
   const [memberAttendanceData, setMemberAttendanceData] = useState(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
