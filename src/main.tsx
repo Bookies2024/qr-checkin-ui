@@ -27,8 +27,8 @@ const router = createBrowserRouter(
         <Route path="login" element={<Auth />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>,
-      <Route path="/:city/:memberId" element={<Member />} />
-    </>
+      <Route path="/:city/:bookiesId" element={<Member />} />
+  </>
   ),
 );
 

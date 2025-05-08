@@ -7,10 +7,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import { Link2, ScanQrCode, LayoutList } from "lucide-react";
+import {  ScanQrCode, LayoutList } from "lucide-react";
 import Scan from "../components/tabs/Scan";
 import List from "../components/tabs/List";
-import Link from "../components/tabs/Link";
 import { useNavigate } from "react-router-dom";
 import { TABS } from "../utils/constants";
 
@@ -21,7 +20,6 @@ const Home: React.FC = () => {
   const tabs = [
     { title: TABS.SCAN, icon: ScanQrCode, component: Scan },
     { title: TABS.LIST, icon: LayoutList, component: List },
-    // { title: TABS.LINK, icon: Link2, component: Link },
   ];
 
   useEffect(() => {
@@ -33,7 +31,7 @@ const Home: React.FC = () => {
   if (!isAuthInitialized) return <div>Loading...</div>;
 
   return (
-    <PageLayout>
+  <PageLayout>
       <Tabs defaultValue={TABS.SCAN} className="flex flex-col h-full w-full">
         <div className="flex-1 flex flex-col overflow-auto py-2">
           {tabs.map((e, i) => {

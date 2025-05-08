@@ -11,7 +11,7 @@ import {
 } from "../components/ui/dialog"
 
 const Header: React.FC = () => {
-  const { config, logout } = useAuth()
+  const { currentCity, logout } = useAuth()
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   const handleLogoClick = () => {
@@ -26,8 +26,8 @@ const Header: React.FC = () => {
   return (
     <div className='flex justify-between items-center text-[#58551E]'>
       <div>
-        <h1 className='text-2xl font-bold capitalize'>{config?.city} Bookies</h1>
-        <p>Reading Community</p>
+        <h1 className='text-xl font-bold capitalize'>{currentCity} Bookies</h1>
+        <p className='text-sm'>Reading Community</p>
       </div>
       <div>
         <img

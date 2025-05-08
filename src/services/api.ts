@@ -1,11 +1,10 @@
 import axios from "axios"
-import { ENV } from "../utils/constants";
-import { AttendanceSchemaType, LinkSchemaType } from "../types";
-import { ConfigType } from "../types/auth";
+import { CONFIG_TYPES, ENV, GET_REQ_TYPES, POST_REQ_TYPES } from "../utils/constants";
+import { AttendanceSchemaType, MasterSchemaType } from "../types";
 
 export const getCities = async () => {
   try {
-    const res = await axios.get(`${ENV.CONFIG_SHEET_EP}?key=${ENV.API_KEY}`)
+    const res = await axios.get(`${ENV.API_ENDPOINT}?key=${ENV.API_KEY}&reqType=${GET_REQ_TYPES.CONFIG_KEYS}&type=${CONFIG_TYPES.CITY}`)
     return res?.data;
   } catch (error) {
     console.error(error)
@@ -13,31 +12,31 @@ export const getCities = async () => {
   }
 }
 
-export const getAttendanceData = async (config: ConfigType) => {
+export const getRecentCheckins = async (city: string) => {
   try {
-    const res = await axios.get(`${config.attendanceSheetEndPoint}?key=${ENV.API_KEY}`);
-    return res?.data;
+    const res = await axios.get(`${ENV.API_ENDPOINT}?key=${ENV.API_KEY}&reqType=${GET_REQ_TYPES.RECENT_CHECKINS}&city=${city}`)
+    return res?.data?.data;
   } catch (error) {
-    console.error("Error fetching master data:", error);
+    console.error(error)
     throw error;
   }
 }
 
-export const getMasterData = async (config: ConfigType) => {
+export const getMemberDetails = async (bookiesId: string, homeCity: string) => {
   try {
-    const res = await axios.get(`${config.masterSheetEndPoint}?key=${ENV.API_KEY}`);
-    return res?.data;
+    const res = await axios.get(`${ENV.API_ENDPOINT}?key=${ENV.API_KEY}&reqType=${GET_REQ_TYPES.MEMBER_DETAILS}&bookiesId=${bookiesId}&homeCity=${homeCity}`)
+    return res?.data?.data;
   } catch (error) {
-    console.error("Error fetching master data:", error);
+    console.error(error)
     throw error;
   }
-};
+}
 
-export const login = async (city: string, passkey: string) => {
+export const login = async (city: string, password: string) => {
   try {
     const res = await axios.post(
-      `${ENV.CONFIG_SHEET_EP}?key=${ENV.API_KEY}`,
-      JSON.stringify({ city, passkey }),
+      `${ENV.API_ENDPOINT}?key=${ENV.API_KEY}&type=${POST_REQ_TYPES.AUTH}`,
+      JSON.stringify({ city, password }),
       {
         headers: {
           "Content-Type": "text/plain;charset=utf-8",
@@ -53,13 +52,14 @@ export const login = async (city: string, passkey: string) => {
     return res?.data?.data;
   } catch (error) {
     console.error("Request failed:", error);
+    throw error;
   }
 };
 
-export const registerAttendance = async (config: ConfigType, data: AttendanceSchemaType) => {
+export const registerAttendance = async (data: AttendanceSchemaType) => {
   try {
     const res = await axios.post(
-      `${config.attendanceSheetEndPoint}?key=${ENV.API_KEY}`,
+      `${ENV.API_ENDPOINT}?key=${ENV.API_KEY}&type=${POST_REQ_TYPES.RECORD}`,
       JSON.stringify(data),
       {
         headers: {
@@ -76,10 +76,10 @@ export const registerAttendance = async (config: ConfigType, data: AttendanceSch
   }
 }
 
-export const linkBookiesID = async (config: ConfigType, data: LinkSchemaType) => {
+export const registerMember = async (data: MasterSchemaType) => {
   try {
     const res = await axios.post(
-      `${config.masterSheetEndPoint}?key=${ENV.API_KEY}`,
+      `${ENV.API_ENDPOINT}?key=${ENV.API_KEY}&type=${POST_REQ_TYPES.REGISTER}`,
       JSON.stringify(data),
       {
         headers: {
@@ -91,17 +91,7 @@ export const linkBookiesID = async (config: ConfigType, data: LinkSchemaType) =>
 
     return res?.data;
   } catch (error) {
-    console.error("Id Linking failed:", error);
-    throw error;
-  }
-}
-
-export const getMemberAttendance = async (endpoint: string, bookiesId: string) => {
-  try {
-    const res = await axios.get(`${endpoint}?key=${ENV.API_KEY}&bookiesId=${bookiesId}`);
-    return res?.data;
-  } catch (error) {
-    console.error("Error fetching member attendance data:", error);
+    console.error("Member registration failed:", error);
     throw error;
   }
 }
