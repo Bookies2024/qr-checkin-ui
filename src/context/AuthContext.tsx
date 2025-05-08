@@ -1,7 +1,6 @@
 import React, { createContext, useState, useCallback, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { AuthContextType, AuthProviderProps, ConfigType } from "../types/auth";
-import { CONFIG_RESPONSE_KEYS } from "../utils/constants";
 import { login as getConfig } from "../services/api";
 
 const AUTH_STORAGE_KEY = "auth";
@@ -14,42 +13,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthInitialized, setIsAuthInitialized] = useState(false);
   const [config, setConfig] = useState<ConfigType | null>(null);
-  const [allCitiesConfig, setAllCitiesConfig] = useState<ConfigType[] | null>(null)
+  const [currentCity, setCurrentCity] = useState<string | null>(null)
 
   const loginMutation = useMutation({
-    mutationFn: ({ city, passkey }: { city: string; passkey: string }) =>
-      getConfig(city, passkey),
+    mutationFn: ({ city, password }: { city: string; password: string }) =>
+      getConfig(city, password),
   });
 
   const login = useCallback(
-    async (city: string, passkey: string): Promise<boolean> => {
+    async (city: string, password: string): Promise<boolean> => {
       try {
-        const data = await loginMutation.mutateAsync({ city, passkey });
-
-        const cityConfig = data.find((e: ConfigType) => e[CONFIG_RESPONSE_KEYS.CITY] == city);
-
-        if (!cityConfig || !cityConfig[CONFIG_RESPONSE_KEYS.MASTER_EP] || !cityConfig[CONFIG_RESPONSE_KEYS.ATTENDANCE_EP]) {
-          throw new Error("No valid config found for this city");
-        }
-
-        const configData: ConfigType = {
-          city: cityConfig[CONFIG_RESPONSE_KEYS.CITY],
-          masterSheetEndPoint: cityConfig[CONFIG_RESPONSE_KEYS.MASTER_EP],
-          attendanceSheetEndPoint: cityConfig[CONFIG_RESPONSE_KEYS.ATTENDANCE_EP],
-          database: cityConfig[CONFIG_RESPONSE_KEYS.CITY],
-        };
+        const data = await loginMutation.mutateAsync({ city, password });
 
         const authData = {
-          config: configData,
-          allCitiesConfig: data,
+          config: data,
+          currentCity: city,
           timestamp: Date.now(),
         };
 
         localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
 
         setIsAuthenticated(true);
-        setConfig(configData);
-        setAllCitiesConfig(data)
+        setConfig(data);
+        setCurrentCity(city)
 
         return true;
       } catch (error) {
@@ -63,23 +49,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     localStorage.removeItem(AUTH_STORAGE_KEY);
     setIsAuthenticated(false);
+    setCurrentCity(null)
     setConfig(null);
-    setAllCitiesConfig(null);
-  };
-
-
-  const updateMasterSheetEP = (city: string) => {
-    const selectedCityConfig = allCitiesConfig?.find(
-      (c) => c[CONFIG_RESPONSE_KEYS.CITY] == city
-    );
-
-    if (selectedCityConfig && config) {
-      setConfig({
-        ...config,
-        masterSheetEndPoint: selectedCityConfig[CONFIG_RESPONSE_KEYS.MASTER_EP],
-        database: selectedCityConfig[CONFIG_RESPONSE_KEYS.CITY]
-      });
-    }
   };
 
   useEffect(() => {
@@ -91,7 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!isExpired) {
         setIsAuthenticated(true)
         setConfig(data.config)
-        setAllCitiesConfig(data.allCitiesConfig)
+        setCurrentCity(data.currentCity)
       } else {
         localStorage.removeItem(AUTH_STORAGE_KEY);
       }
@@ -103,12 +74,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const contextValue: AuthContextType = {
     isAuthenticated,
     isAuthInitialized,
+    currentCity,
     login,
     logout,
     isLoginLoading: loginMutation.isPending,
     config,
-    allCitiesConfig,
-    updateMasterSheetEP
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

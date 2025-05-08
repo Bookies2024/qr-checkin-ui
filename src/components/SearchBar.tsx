@@ -2,36 +2,43 @@ import React, { useState, useEffect } from 'react'
 import { Input } from './ui/input'
 import { Search, ScanQrCode, X } from 'lucide-react'
 import { Button } from './ui/button'
-import { useApp } from '../hooks/useApp'
 import Scanner from './Scanner'
+import { IDetectedBarcode } from '@yudiel/react-qr-scanner'
 
-const SearchBar = () => {
-  const { setSearchKey, qrScanData, setQRScanData } = useApp()
+interface SearchBarProps {
+  searchParam: { bookiesId: string, homeCity: string };
+  setSearchParam: ({ bookiesId, homeCity }: { bookiesId: string, homeCity: string }) => void
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ searchParam, setSearchParam }) => {
   const [inputValue, setInputValue] = useState<string | null>(null)
   const [scannerOpen, setScannerOpen] = useState<boolean>(false)
 
   useEffect(() => {
-    if (qrScanData) {
-      setInputValue(qrScanData)
-      setQRScanData(null)
-      setScannerOpen(false)
-    }
-  }, [qrScanData]);
+    // const delayDebounce = setTimeout(() => {
+      if (!searchParam.homeCity || inputValue == '') {
+        setSearchParam({ bookiesId: inputValue, homeCity: '' })
+      }
+    // }, 1000)
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      setSearchKey(inputValue)
-    }, 2000)
+    // return () => clearTimeout(delayDebounce)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputValue, setSearchParam])
 
-    return () => clearTimeout(delayDebounce)
-  }, [inputValue, setSearchKey])
+
+  const onScan = (value: IDetectedBarcode[]) => {
+    const [, city, bookiesId] = value[0].rawValue.split('/');
+    setSearchParam({ bookiesId: bookiesId, homeCity: city })
+    setInputValue(bookiesId)
+    setScannerOpen(false)
+  }
 
   return (
     <div className="relative w-full">
       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
 
       <Input
-        value={inputValue}
+        value={inputValue ?? ''}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Enter Bookies ID"
         className="bg-white p-6 rounded-full focus-visible:ring-0 focus-visible:border-1"
@@ -67,7 +74,7 @@ const SearchBar = () => {
             </Button>
           </div>
           <div>
-            <Scanner />
+            <Scanner onScan={onScan} />
           </div>
         </div>
       )}

@@ -1,20 +1,17 @@
 export const ENV = {
     API_KEY: import.meta.env.VITE_API_KEY || "",
-    CONFIG_SHEET_EP: import.meta.env.VITE_CONFIG_SHEET_EP || ""
+    API_ENDPOINT: import.meta.env.VITE_API_ENDPOINT || ""
 }
-
-export const CONFIG_RESPONSE_KEYS = {
-    CITY: "City",
-    MASTER_EP: "Mastersheet EP",
-    ATTENDANCE_EP: "Attendance Sheet EP"
-};
 
 export const DATA_RESPONSE_KEYS = {
     TIMESTAMP: "Timestamp",
     BOOKIES_ID: "Bookies ID",
     NAME: "Name",
+    FIRST_NAME: "First Name",
+    LAST_NAME: "Last Name",
     EMAIL: "Email",
-    PHONE_NUMBER: 'Phone Number'
+    PHONE_NUMBER: 'Phone Number',
+    HOME_CITY: 'Home City'
 }
 
 export const TOAST_STYLES = {
@@ -26,5 +23,21 @@ export const TOAST_STYLES = {
 export const TABS = {
     SCAN: "Scan",
     LIST: "List",
-    LINK: "Link"
+}
+
+export const POST_REQ_TYPES = {
+    AUTH: "AUTH",
+    RECORD: "RECORD",
+    REGISTER: "REGISTER"
+}
+
+export const GET_REQ_TYPES = {
+    CONFIG_KEYS: 'CONFIG-KEYS',
+    RECENT_CHECKINS: 'RECENT-CHECKINS',
+    MEMBER_DETAILS: 'MEMBER-DETAILS',
+}
+
+export const CONFIG_TYPES = {
+    CITY: 'city',
+    Email: "email"
 }

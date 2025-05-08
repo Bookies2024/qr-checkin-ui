@@ -1,70 +1,43 @@
-import { ConfigType } from "./auth";
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-export interface AuthResponse {
-    success: boolean;
-    data?: {
-        City: string;
-        "Mastersheet EP": string;
-        "Attendance Sheet EP": string;
-    };
-    error?: string;
-}
-
-export interface MemberData {
-    Name: string;
-    "Bookies ID": string;
-    Email: string;
-    "Phone Number": number | string;
-    [key: string]: any;
-}
 
 export interface AttendanceRecord {
     Timestamp: string;
     "Bookies ID": string;
-    Name: string;
-    Email: string;
-    "Phone Number": number | string;
+    "Home City": string;
+    City?: string;
 }
 
 export interface AppContextType {
     isCitiesLoading: boolean;
     cities: string[],
-    masterData: MemberData[],
-    isMasterDataLoading: boolean,
-    attendanceData: AttendanceRecord[],
-    isAttendanceDataLoading: boolean,
-    qrScanData: string | null;
-    searchKey: string | null;
+    recentCheckins: AttendanceRecord[],
+    isRecentCheckinsLoading: boolean,
+    isGetMemberDetailsLoading: boolean,
     isQRScanPaused: boolean;
-    setQRScanPauseState: (value: boolean) => void
-    setQRScanData: (data: string | null) => void;
-    setSearchKey: (data: string | null) => void;
-    registerAttendance: (config: ConfigType, data: AttendanceSchemaType) => Promise<any>,
-    linkBookiesID: (config: ConfigType, data: LinkSchemaType) => Promise<any>,
-    getMemberAttendance: (allCitiesConfig: ConfigType[], bookiesId: string) => Promise<any>,
+    setIsQRScanPaused: (value: boolean) => void
+    registerMember: (data: MasterSchemaType) => Promise<any>,
+    registerAttendance: (data: AttendanceSchemaType) => Promise<any>,
+    getMemberDetails: (bookiesId: string, homeCity: string) => Promise<any>,
+}
+
+export type MasterSchemaType = {
+    bookiesId: string,
+    firstName: string,
+    lastName: string,
+    gender: string,
+    email: string,
+    phoneNumber: string,
+    dateOfBirth: string,
+    city: string,
 }
 
 export type AttendanceSchemaType = {
     bookiesId: string,
-    name: string,
-    email: string,
-    phone: string
-}
-
-export type LinkSchemaType = {
-    bookiesId: string,
-    email: string,
+    city: string,
+    homeCity?: string
 }
 
 export interface ScannerProps {
     onScan: (data: string) => void;
     onError?: (error: any) => void;
-}
-
-export interface TabData {
-    key: string;
-    title: string;
-    icon: React.ElementType;
 }
