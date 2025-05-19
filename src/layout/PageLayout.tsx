@@ -7,7 +7,7 @@ interface PageLayoutProps {
 
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   return (
-    <div className='h-screen flex flex-col'>
+    <div className='h-screen flex flex-col gap-2'>
       <div>
         <Header />
       </div>
