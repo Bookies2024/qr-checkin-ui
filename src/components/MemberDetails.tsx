@@ -17,7 +17,7 @@ interface MemberDetailsProps {
 
 const MemberDetails: React.FC<MemberDetailsProps> = ({ memberDetails }) => {
   const sortedSessions = memberDetails?.attendedSessions?.sort((a: any, b: any) =>
-    new Date(b[DATA_RESPONSE_KEYS.TIMESTAMP]).getTime() - new Date(a[DATA_RESPONSE_KEYS.TIMESTAMP]).getTime()
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
   return (
@@ -48,7 +48,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({ memberDetails }) => {
           {sortedSessions?.map((e: any, i: number) => (
             <TableRow key={i}>
               <TableCell>{e?.city}</TableCell>
-              <TableCell>{dayjs(e?.[DATA_RESPONSE_KEYS.TIMESTAMP]).format('ddd DD/MM/YYYY')}</TableCell>
+              <TableCell>{dayjs(e?.timestamp).format('ddd DD/MM/YYYY')}</TableCell>
             </TableRow>
           ))}
         </TableBody>
