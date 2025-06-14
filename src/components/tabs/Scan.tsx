@@ -19,8 +19,8 @@ const Scan: React.FC = () => {
 
     const res = await registerAttendance({
       bookiesId: bookiesId,
-      homeCity: city,
-      city: currentCity,
+      homeCity: city.toLocaleLowerCase(),
+      city: currentCity.toLocaleLowerCase()
     });
 
     if (res?.success) {
