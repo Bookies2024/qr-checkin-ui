@@ -28,7 +28,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({ memberDetails }) => {
         { field: 'Total Attended Sessions', value: memberDetails?.attendedSessions?.length },
         {
           field: 'First Session',
-          value: (sortedSessions?.length > 0) ? `${sortedSessions?.[sortedSessions?.length - 1]?.city} : ${dayjs(sortedSessions?.[sortedSessions?.length - 1]?.[DATA_RESPONSE_KEYS.TIMESTAMP]).format('ddd DD/MM/YYYY')}` : '',
+          value: (sortedSessions?.length > 0) ? `${sortedSessions?.[sortedSessions?.length - 1]?.city} : ${dayjs(sortedSessions?.[sortedSessions?.length - 1]?.timestamp).format('ddd DD/MM/YYYY')}` : '',
         },
       ].map((e, i) => (
         <div key={i}>
